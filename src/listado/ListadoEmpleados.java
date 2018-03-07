@@ -30,7 +30,7 @@ public class ListadoEmpleados {
     }
 
     // Obtener número de empleados en el archivo, para comprobar si la lectura de datos ha sido exitosa
-    public Integer obtenerNumeroEmpleadosArchivo(){
+    public int obtenerNumeroEmpleadosArchivo(){
         return listadoArchivo.size();
     }
 }
