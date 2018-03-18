@@ -114,4 +114,18 @@ public class ListadoEmpleados {
         }
     }
 
+    // Guardar todos los datos en la variable listado, una vez reparados los errores
+    public void validarListaArchivo(){
+        // Reparar DNIs
+        Map<String, List<Empleado>> dnis_repetidos = obtenerDnisRepetidosArchivo();
+        repararDnisRepetidos(dnis_repetidos);
+
+        // Reparar correos
+        Map<String, List<Empleado>> correos_repetidos = obtenerCorreosRepetidosArchivo();
+        repararCorreosRepetidos(correos_repetidos);
+
+        // Almacenar los empleados en listado, con un par (DNI, empleado)
+        listado = listadoArchivo.stream().collect(Collectors.toMap(Empleado::obtenerDni, empleado -> empleado));
+    }
+
 }
