@@ -74,4 +74,44 @@ public class ListadoEmpleados {
         }
     }
 
+    // Conocer si hay correos repetidos en el archivo
+    public boolean hayCorreosRepetidosArchivo(){
+        int total_correos = obtenerNumeroEmpleadosArchivo();
+        long correos_distintos = listadoArchivo.stream().map(Empleado::obtenerCorreo).distinct().count();
+        return (total_correos != correos_distintos);
+    }
+
+    // Obtener datos de empleados con correos repetidos
+    public Map<String, List<Empleado>> obtenerCorreosRepetidosArchivo(){
+        // Primero se obtienen los correos con los datos de los empleados asociados
+        Map<String, List<Empleado>> correos = listadoArchivo.stream().collect(Collectors.groupingBy(Empleado::obtenerCorreo));
+
+        // Y a continuación se filtran solo aquellos correos que correspondan a más de un empleado, almacenándolos en un Map
+        Map<String, List<Empleado>> correos_repetidos = correos.entrySet().stream().filter(entrada -> entrada.getValue().size() > 1).
+                collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        return correos_repetidos;
+    }
+
+    // Conteo de empleados con correo repetido, haciendo uso del método anterior
+    public int contarCorreosRepetidos(){
+        Map<String, List<Empleado>> correos_repetidos = obtenerCorreosRepetidosArchivo();
+
+        // Ahora obtenemos el número de empleados afectados, la suma de los valores del mapa
+        int empleados_repetidos = correos_repetidos.entrySet().stream().mapToInt(entrada -> entrada.getValue().size()).sum();
+        return empleados_repetidos;
+    }
+
+    // Reparación de correos repetidos, generando nuevos correos para los empleados afectados
+    public void repararCorreosRepetidos(Map<String, List<Empleado>> lista_repeticion) {
+        while (!lista_repeticion.isEmpty()) {
+            lista_repeticion.values().stream().flatMap(empleado -> empleado.stream()).forEach(empleado -> {
+                int indice_empleado = listadoArchivo.indexOf(empleado);
+                listadoArchivo.get(indice_empleado).generarCorreoCompleto();
+            });
+
+            lista_repeticion = obtenerCorreosRepetidosArchivo();
+        }
+    }
+
 }

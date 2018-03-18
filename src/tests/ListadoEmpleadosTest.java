@@ -39,4 +39,21 @@ public class ListadoEmpleadosTest {
         empleados.repararDnisRepetidos(dnis_repetidos);
         assertEquals(0, empleados.contarEmpleadosDnisRepetidos());
     }
+
+    @Test
+    public void hayCorreosRepetidosArchivo(){
+        assertEquals(true, empleados.hayCorreosRepetidosArchivo());
+    }
+
+    @Test
+    public void contarCorreosRepetidos(){
+        assertEquals(315, empleados.contarCorreosRepetidos());
+    }
+
+    @Test
+    public void repararCorreosRepetidos(){
+        Map<String, List<Empleado>> correos_repetidos = empleados.obtenerCorreosRepetidosArchivo();
+        empleados.repararCorreosRepetidos(correos_repetidos);
+        assertEquals(0, empleados.contarCorreosRepetidos());
+    }
 }
