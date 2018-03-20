@@ -6,6 +6,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -16,6 +17,9 @@ public class ListadoEmpleados {
     private List<Empleado> listadoArchivo;
 
     private Map<String,Empleado> listado;
+
+    private Pattern patron_espacios = Pattern.compile("\\s+");
+
 
     public ListadoEmpleados(String rutaArchivo) throws IOException{
         listado = new HashMap<>();
@@ -126,6 +130,70 @@ public class ListadoEmpleados {
 
         // Almacenar los empleados en listado, con un par (DNI, empleado)
         listado = listadoArchivo.stream().collect(Collectors.toMap(Empleado::obtenerDni, empleado -> empleado));
+    }
+
+    public long cargarArchivoAsignacionSector(String ruta_archivo) throws IOException{
+        List<String> lineas_archivo = Files.lines(Paths.get(ruta_archivo), StandardCharsets.ISO_8859_1).collect(Collectors.toList());
+
+        Sector sector = procesarNombreSector(lineas_archivo.get(0));
+
+        long errores = lineas_archivo.stream().skip(2).map(linea -> procesarAsignacionSector(sector, linea)).
+                filter(flag -> flag == false).count();
+
+        return errores;
+    }
+
+    public Sector procesarNombreSector(String nombre){
+        List<String> infos = patron_espacios.splitAsStream(nombre).collect(Collectors.toList());
+
+        Predicate<Sector> condicion = sector -> (sector.name().equals(infos.get(0)));
+        Sector nuevo_sector = Arrays.stream(Sector.values()).filter(condicion).findFirst().get();
+
+        return nuevo_sector;
+    }
+
+    public boolean procesarAsignacionSector(Sector sector, String linea){
+        List<String> infos = patron_espacios.splitAsStream(linea).collect(Collectors.toList());
+        Empleado empleado = listado.get(infos.get(0));
+
+        if (empleado != null){
+            empleado.asignarSector(sector);
+            return true;
+        }
+        else
+            return false;
+    }
+
+    public long cargarArchivoAsignacionRuta(String ruta_archivo) throws IOException{
+        List<String> lineas_archivo = Files.lines(Paths.get(ruta_archivo), StandardCharsets.ISO_8859_1).collect(Collectors.toList());
+
+        Ruta ruta = procesarNombreRuta(lineas_archivo.get(0));
+
+        long errores = lineas_archivo.stream().skip(2).map(linea -> procesarAsignacionRuta(ruta, linea)).
+                filter(flag -> flag == false).count();
+
+        return errores;
+    }
+    
+    public Ruta procesarNombreRuta(String nombre){
+        List<String> infos = patron_espacios.splitAsStream(nombre).collect(Collectors.toList());
+
+        Predicate<Ruta> condicion = ruta -> (ruta.name().equals(infos.get(0)));
+        Ruta nueva_ruta = Arrays.stream(Ruta.values()).filter(condicion).findFirst().get();
+
+        return nueva_ruta;
+    }
+
+    public boolean procesarAsignacionRuta(Ruta ruta, String linea){
+        List<String> infos = patron_espacios.splitAsStream(linea).collect(Collectors.toList());
+        Empleado empleado = listado.get(infos.get(0));
+
+        if (empleado != null){
+            empleado.asignarRuta(ruta);
+            return true;
+        }
+        else
+            return false;
     }
 
 }
