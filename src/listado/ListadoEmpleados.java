@@ -6,6 +6,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -196,4 +197,16 @@ public class ListadoEmpleados {
             return false;
     }
 
+    public Map<Ruta,Long> obtenerContadoresRuta(Sector sector){
+        Map<Ruta,Long> contadores = listado.values().stream().
+                filter(empleado -> empleado.obtenerSector() == sector).
+                collect(Collectors.groupingBy(Empleado::obtenerRuta, TreeMap::new, Collectors.counting()));
+
+        return contadores;
+    }
+
+    public Map<Sector, Map<Ruta,Long>> obtenerContadoresSectorRuta(){
+        return Arrays.stream(Sector.values()).
+                collect(Collectors.toMap(sector -> sector, sector -> obtenerContadoresRuta(sector)));
+    }
 }
