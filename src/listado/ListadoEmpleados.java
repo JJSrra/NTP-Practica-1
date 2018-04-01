@@ -209,4 +209,11 @@ public class ListadoEmpleados {
         return Arrays.stream(Sector.values()).
                 collect(Collectors.toMap(sector -> sector, sector -> obtenerContadoresRuta(sector)));
     }
+
+    public List<Long> obtenerContadoresSectores(){
+        List<Long> contadores = obtenerContadoresSectorRuta().values().stream().map(Map::values).
+                map(contador -> contador.stream().reduce(0L, Long::sum)).collect(Collectors.toList());
+
+        return contadores;
+    }
 }
