@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Práctica 1 NTP
@@ -63,7 +64,6 @@ public class ListadoTestP2 {
     *
     * @throws Exception
     */
-   /*
    @Test
    public void testBusquedaEmpleadosSinRuta() throws Exception {
       // Se obtienen los empleados no asignados a cada asignatura
@@ -77,7 +77,6 @@ public class ListadoTestP2 {
       assert (res2 == 432);
       assert (res3 == 399);
    }
-   */
 
    /**
     * Prueba para el procedimiento de conteo de grupos para cada una
@@ -136,4 +135,16 @@ public class ListadoTestP2 {
        // Se comprueban los resultados del método con los de referencia
        assertArrayEquals(contadores.toArray(), contadoresReferencia);
    }
+
+   @Test
+    public void testBusquedaEmpleadosConSectorSinRuta(){
+       List<Empleado> empleados = listado.buscarEmpleadosConSectorSinRuta();
+       assertEquals(831, empleados.size());
+   }
+
+    @Test
+    public void testBusquedaEmpleadosSinSectorConRuta(){
+        List<Empleado> empleados = listado.buscarEmpleadosSinSectorConRuta();
+        assertEquals(1269, empleados.size());
+    }
 }

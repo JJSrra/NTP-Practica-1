@@ -218,4 +218,35 @@ public class ListadoEmpleados {
 
         return contadores;
     }
+
+    public List<Empleado> buscarEmpleadosSinSectorSinRuta(){
+        return listado.values().stream().
+                filter(empleado -> (empleado.obtenerSector() == Sector.NOSECTOR && empleado.obtenerRuta() == Ruta.NORUTA)).
+                collect(Collectors.toList());
+    }
+
+    public List<Empleado> buscarEmpleadosSinRuta(Sector sector){
+        return listado.values().stream().
+                filter(empleado -> (empleado.obtenerSector() == sector && empleado.obtenerRuta() == Ruta.NORUTA)).
+                collect(Collectors.toList());
+    }
+
+    public List<Empleado> buscarEmpleadosConSectorSinRuta(){
+        // Para hacer uso del método anterior hay que tener un flujo de sectores, eliminando el sector NOSECTOR
+        // que indica que el empleado no pertenece a ningún sector
+        return Arrays.stream(Sector.values()).filter(sector -> sector != Sector.NOSECTOR).
+                map(this::buscarEmpleadosSinRuta).flatMap(List::stream).collect(Collectors.toList());
+    }
+
+    public List<Empleado> buscarEmpleadosSinSector(Ruta ruta){
+        return listado.values().stream().
+                filter(empleado -> (empleado.obtenerSector() == Sector.NOSECTOR && empleado.obtenerRuta() == ruta)).
+                collect(Collectors.toList());
+    }
+
+    public List<Empleado> buscarEmpleadosSinSectorConRuta(){
+        // Al igual que en el caso anterior debemos tener un flujo de rutas, sin contar con NORUTA
+        return Arrays.stream(Ruta.values()).filter(ruta -> ruta != Ruta.NORUTA).
+                map(this::buscarEmpleadosSinSector).flatMap(List::stream).collect(Collectors.toList());
+    }
 }
