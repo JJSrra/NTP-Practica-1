@@ -123,6 +123,17 @@ public class ListadoTestP2 {
          toArray(contadoresCalculados), contadoresReferenciaSector2);
    }
 
-   // Aqui habria que completar los casos de prueba para el resto de
-   // metodos a ofrecer por la clase Listado
+   @Test
+    public void testObtenerContadoresSectores() throws Exception{
+       // Se obtienen los contadores para cada sector
+       List<Long> contadores =
+               listado.obtenerContadoresSectores();
+
+       // Se comprueban los valores obtenenidos con los valores por referencia
+       // Orden: NOSECTOR, SECTOR1, SECTOR2
+       Long contadoresReferencia[] = {1687L, 1673L, 1640L};
+
+       // Se comprueban los resultados del método con los de referencia
+       assertArrayEquals(contadores.toArray(), contadoresReferencia);
+   }
 }

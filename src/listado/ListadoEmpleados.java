@@ -206,7 +206,9 @@ public class ListadoEmpleados {
     }
 
     public Map<Sector, Map<Ruta,Long>> obtenerContadoresSectorRuta(){
+        // Se devuelven ordenados por orden alfanumérico para que el test se pueda realizar correctamente
         return Arrays.stream(Sector.values()).
+                sorted(Comparator.comparing(Sector::ordinal)).
                 collect(Collectors.toMap(sector -> sector, sector -> obtenerContadoresRuta(sector)));
     }
 
